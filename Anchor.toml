@@ -1,0 +1,12 @@
+[features]
+seeds = false
+skip-lint = false
+[programs.devnet]
+crypto_mail = "GJebPEsVvfuW1sgLSFWudJfzhQvj9ERuKfLmdn64bXb8"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "/home/mateo/.config/solana/id.json"
