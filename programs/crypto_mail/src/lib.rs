@@ -22,13 +22,11 @@ pub mod crypto_mail {
         ctx: Context<SendMail>,
         mail: String,
         len: u16,
-        timestamp: i64
     ) -> Result<()> {
         instructions::send_mail::send_mail(
             ctx,
             mail,
             len,
-            timestamp
         )
     }
 }
