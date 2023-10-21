@@ -1,6 +1,6 @@
 <div align="center">
 
-![crypto-mail](crypto-mail.gif)
+![crypto-mail](https://user-images.githubusercontent.com/98977436/277123778-8df15828-ec85-426e-b3b9-f67c9d57296a.gif)
 
 <h1>Crypto Mail</h1>
 
