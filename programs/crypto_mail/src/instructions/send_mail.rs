@@ -1,55 +1,45 @@
-use anchor_lang::{
-    prelude::*,
-    solana_program::pubkey::Pubkey,
-};
-use crate::state::accounts::*;
-use crate::errors::ErrorCode;
+use crate::{state::accounts::*, utils::constants::MAX_TX_BUFFER};
+use anchor_lang::{prelude::*, solana_program::pubkey::Pubkey};
 
-pub fn send_mail(
-    ctx: Context<SendMail>,
-    mail: String,
-    len: u16,
-) -> Result<()> {
-    let (_pda, bump) = Pubkey::find_program_address(&[ctx.accounts.user.key().as_ref()], ctx.program_id);
-    // Check if the mail length exceeds the maximum allowed length
-    require!(mail.len() <= 9923, ErrorCode::LenghtError);
-    // Check if the sender's public key matches the user's key
-    require!(ctx.accounts.sender.pubkey.key() == ctx.accounts.user.key(), ErrorCode::PubkeyError);
+pub fn send_mail_(ctx: Context<SendMail>, mail_txt: String) -> Result<()> {
+    let signer: Pubkey = ctx.accounts.user.key();
+    let sender: Pubkey = ctx.accounts.sender.pubkey.key();
+    let receiver: Pubkey = ctx.accounts.receiver.key();
+    let program_id: Pubkey = ctx.program_id.key();
+    let (_pda, bump): (Pubkey, u8) =
+        Pubkey::find_program_address(&[&signer.to_bytes()], &program_id);
+    require_gte!(MAX_TX_BUFFER, mail_txt.len());
+    require_keys_eq!(signer, sender);
     let mail: &mut Account<Mail> = &mut ctx.accounts.mail;
-    mail.bump_original = bump;
-    // Set the receiver's key in the mail account
-    mail.receiver = ctx.accounts.receiver.key();
-    // Set the sender's key in the mail account
-    mail.sender = ctx.account.user.key();
+    mail.set_bump_original(bump);
+    mail.set_receiver(receiver);
+    mail.set_sender(signer);
     Ok(())
 }
 
 #[derive(Accounts)]
-#[instruction(len: u16)]
+#[instruction(mail_txt: String)]
 pub struct SendMail<'info> {
     #[account(
         init,
-        // Seeds for initializing the mail account
         seeds = [
-            user.key().to_bytes().as_ref(),
-            receiver.key().to_bytes().as_ref(),
+            &user.key().to_bytes(),
+            &receiver.key().to_bytes(),
         ],
         bump,
-        // Payer of the account initialization transaction
         payer = user,
-        // Required space for the mail account
-        space = 8 + 4 + len as usize
+        space = Mail::SIZE + mail_txt.len()
     )]
     pub mail: Account<'info, Mail>,
     #[account(
         mut,
-        seeds = [sender.pubkey.key().as_ref()],
+        seeds = [&sender.pubkey.key().to_bytes()],
         bump = sender.bump_original
     )]
     pub sender: Account<'info, MailAccount>,
     #[account(
         mut,
-        seeds = [receiver.pubkey.key().as_ref()],
+        seeds = [&receiver.pubkey.key().to_bytes()],
         bump = receiver.bump_original
     )]
     pub receiver: Account<'info, MailAccount>,

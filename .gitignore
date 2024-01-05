@@ -2,6 +2,7 @@
 .anchor
 .DS_Store
 target
+Cargo.lock
 **/*.rs.bk
 node_modules
 test-ledger

@@ -1,25 +1,19 @@
-use anchor_lang::{
-    prelude::*,
-    solana_program::pubkey::Pubkey,
-};
 use crate::state::accounts::*;
+use anchor_lang::{prelude::*, solana_program::pubkey::Pubkey};
 
-pub fn init_crypto_mail(
-    ctx: Context<InitCryptoMail>,
-) -> Result<()> {
+pub fn init_crypto_mail_(ctx: Context<InitCryptoMail>) -> Result<()> {
+    let signer: Pubkey = ctx.accounts.user.key();
+    let program_id: Pubkey = ctx.program_id.key();
     let account: &mut Account<MailAccount> = &mut ctx.accounts.account;
-    // Generate program-derived address (PDA) and bump seed
-    let (_pda, bump) = Pubkey::find_program_address(&[ctx.accounts.user.key().as_ref()], ctx.program_id);
-    // Set the bump seed and public key for the CryptoMail account
-    account.bump_original = bump;
-    account.pubkey = ctx.accounts.user.key();
+    let (_pda, bump) = Pubkey::find_program_address(&[&signer.to_bytes()], &program_id);
+    account.set_bump_original(bump);
+    account.set_authority(signer);
     Ok(())
 }
 
 #[derive(Accounts)]
 pub struct InitCryptoMail<'info> {
-    // Initialize the MailAccount
-    #[account(init, seeds = [user.key().as_ref()], bump, payer = user, space = 8 + MailAccount::SIZE)]
+    #[account(init, seeds = [&user.key().to_bytes()], bump, payer = user, space = MailAccount::SIZE)]
     pub account: Account<'info, MailAccount>,
     #[account(mut)]
     pub user: Signer<'info>,
