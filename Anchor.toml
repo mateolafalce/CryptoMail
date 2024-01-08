@@ -1,12 +1,17 @@
 [features]
 seeds = false
 skip-lint = false
+
 [programs.devnet]
-crypto_mail = "GJebPEsVvfuW1sgLSFWudJfzhQvj9ERuKfLmdn64bXb8"
+crypto_mail = "AemmGzS478dTy7FrEtpT6zzexCMT61TxMwpuygKPQ6tU"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "devnet"
+cluster = "Devnet"
 wallet = "/home/mateo/.config/solana/id.json"
+
+[scripts]
+init_mail = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/init_mail.ts"
+send_mail = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/send_mail.ts"

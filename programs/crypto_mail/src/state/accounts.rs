@@ -5,6 +5,7 @@ use anchor_lang::prelude::*;
 pub struct MailAccount {
     pub bump_original: u8, // 1
     pub pubkey: Pubkey,    // 32
+    pub total_mails: u16,  // 4
 }
 
 #[account]
@@ -29,10 +30,14 @@ impl Mail {
     pub fn set_sender(&mut self, sender: Pubkey) {
         self.sender = sender;
     }
+
+    pub fn set_mail(&mut self, mail: String) {
+        self.mail = mail;
+    }
 }
 
 impl MailAccount {
-    pub const SIZE: usize = 1 + 32 + ANCHOR_BUFFER;
+    pub const SIZE: usize = 1 + 32 + 4 + ANCHOR_BUFFER;
 
     pub fn set_bump_original(&mut self, bump: u8) {
         self.bump_original = bump;
@@ -40,5 +45,13 @@ impl MailAccount {
 
     pub fn set_authority(&mut self, auth: Pubkey) {
         self.pubkey = auth;
+    }
+
+    pub fn init_mails(&mut self) {
+        self.total_mails = 0;
+    }
+
+    pub fn add_mails(&mut self) {
+        self.total_mails += 1;
     }
 }

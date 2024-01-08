@@ -4,10 +4,12 @@ use anchor_lang::{prelude::*, solana_program::pubkey::Pubkey};
 pub fn init_crypto_mail_(ctx: Context<InitCryptoMail>) -> Result<()> {
     let signer: Pubkey = ctx.accounts.user.key();
     let program_id: Pubkey = ctx.program_id.key();
+    let (pda, bump) = Pubkey::find_program_address(&[&signer.to_bytes()], &program_id);
+    require_keys_eq!(pda, ctx.accounts.account.key());
     let account: &mut Account<MailAccount> = &mut ctx.accounts.account;
-    let (_pda, bump) = Pubkey::find_program_address(&[&signer.to_bytes()], &program_id);
     account.set_bump_original(bump);
     account.set_authority(signer);
+    account.init_mails();
     Ok(())
 }
 

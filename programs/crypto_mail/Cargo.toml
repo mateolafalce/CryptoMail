@@ -1,6 +1,6 @@
 [package]
 name = "crypto_mail"
-version = "1.0.0"
+version = "1.0.1"
 description = "crypto_mail"
 edition = "2021"
 authors = ["Mateo Lafalce <mateolafalce@protonmail.com>"]

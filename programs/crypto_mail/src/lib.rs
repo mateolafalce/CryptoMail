@@ -7,7 +7,7 @@ pub mod utils;
 
 use instructions::{init_crypto_mail::init_crypto_mail_, send_mail::send_mail_};
 
-declare_id!("GJebPEsVvfuW1sgLSFWudJfzhQvj9ERuKfLmdn64bXb8");
+declare_id!("AemmGzS478dTy7FrEtpT6zzexCMT61TxMwpuygKPQ6tU");
 
 #[program]
 pub mod crypto_mail {
